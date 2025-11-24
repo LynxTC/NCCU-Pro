@@ -1,0 +1,28 @@
+/* ------------------------------------ */
+/* 1. 導入 Tailwind CSS 基礎指令 */
+/* ------------------------------------ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------ */
+/* 2. 導入原始 HTML 中的自定義樣式 (Custom Scrollbar) */
+/* ------------------------------------ */
+
+/* 自定義滾動條樣式 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+/* 字體設定 */
+body {
+    /* 這裡假設您希望繼續使用 inter 字體 */
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    background-color: #f8fafc;
+}
