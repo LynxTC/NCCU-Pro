@@ -13,6 +13,7 @@ const COLLEGE_ORDER = [
 
 const programsByCollege = ref({}); // 所有學程定義 (按學院分類)
 const selectedCollege = ref(''); // 目前選擇的學院
+const selectedProgramType = ref('credit'); // 目前選擇的學程類型 ('credit' | 'micro')
 const selectedProgramIds = ref([]); // 選取的學程 ID 列表
 const studentFile = ref(null); // 上傳的 JSON 檔案
 const uploadStatus = ref(''); // 檔案上傳狀態訊息
@@ -127,7 +128,16 @@ const sortedCollegeNames = computed(() => {
 
 const currentPrograms = computed(() => {
     if (!selectedCollege.value) return {};
-    return programsByCollege.value[selectedCollege.value] || {};
+    const programs = programsByCollege.value[selectedCollege.value] || {};
+    
+    // 根據選擇的類型過濾學程
+    const filtered = {};
+    for (const [id, p] of Object.entries(programs)) {
+        if (p.type === selectedProgramType.value) {
+            filtered[id] = p;
+        }
+    }
+    return filtered;
 });
 
 const isReadyToCheck = computed(() => {
@@ -206,12 +216,26 @@ const safeCheckResults = computed(() => {
                 選取欲檢核的學分學程 (可複選)
             </h2>
             
-            <!-- 學院選擇下拉選單 -->
-            <div class="mb-4">
-                <label for="collegeSelect" class="block text-sm font-medium text-gray-700 mb-1">選擇學院：</label>
-                <select id="collegeSelect" v-model="selectedCollege" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option v-for="collegeName in sortedCollegeNames" :key="collegeName" :value="collegeName">{{ collegeName }}</option>
-                </select>
+            <div class="flex flex-col sm:flex-row sm:items-end gap-4 mb-6">
+                <!-- 學院選擇下拉選單 -->
+                <div class="w-full sm:w-1/2">
+                    <label for="collegeSelect" class="block text-sm font-medium text-gray-700 mb-1">選擇設置單位：</label>
+                    <select id="collegeSelect" v-model="selectedCollege" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option v-for="collegeName in sortedCollegeNames" :key="collegeName" :value="collegeName">{{ collegeName }}</option>
+                    </select>
+                </div>
+
+                <!-- 學程類型選擇 (Radio Buttons) -->
+                <div class="flex items-center space-x-6 pb-2">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" value="credit" v-model="selectedProgramType" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">學分學程</span>
+                    </label>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="radio" value="micro" v-model="selectedProgramType" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-gray-700 font-medium">微學程</span>
+                    </label>
+                </div>
             </div>
 
             <div id="programCheckboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-4">

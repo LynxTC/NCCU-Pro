@@ -38,6 +38,7 @@ type Program struct {
 	MinCredits   float64              `json:"min_credits"`
 	Description  string               `json:"description"`
 	Requirements []ProgramRequirement `json:"requirements"`
+	Type         string               `json:"type"` // "micro" (微學程) or "credit" (學分學程)
 }
 
 // 檢核結果中的一個分類結果
@@ -105,22 +106,37 @@ func isInProgress(scoreStr string) bool {
 }
 
 // 載入學程定義
-func loadPrograms(filename string) error {
-	file, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-
+func loadPrograms() error {
 	programsByCollege = make(map[string]map[string]Program)
-	err = json.Unmarshal(file, &programsByCollege)
-	if err != nil {
-		return fmt.Errorf("無法解析 programs.json: %w", err)
+	programs = make(map[string]Program)
+
+	// 定義檔案與學程類型的對應
+	files := map[string]string{
+		"micro_programs.json":  "micro",
+		"credit_programs.json": "credit",
 	}
 
-	programs = make(map[string]Program)
-	for _, collegeMap := range programsByCollege {
-		for id, p := range collegeMap {
-			programs[id] = p
+	for filename, pType := range files {
+		file, err := os.ReadFile(filename)
+		if err != nil {
+			return err
+		}
+
+		var currentFilePrograms map[string]map[string]Program
+		err = json.Unmarshal(file, &currentFilePrograms)
+		if err != nil {
+			return fmt.Errorf("無法解析 %s: %w", filename, err)
+		}
+
+		for college, collegePrograms := range currentFilePrograms {
+			if _, ok := programsByCollege[college]; !ok {
+				programsByCollege[college] = make(map[string]Program)
+			}
+			for id, p := range collegePrograms {
+				p.Type = pType // 標記學程類型
+				programsByCollege[college][id] = p
+				programs[id] = p
+			}
 		}
 	}
 	return nil
@@ -438,10 +454,10 @@ func main() {
 		port = "8080"
 	}
 
-	// 2. 讀取 programs.json (假設你在 init 或 main 中讀取)
+	// 2. 讀取 micro_programs.json (假設你在 init 或 main 中讀取)
 	// 如果你依照之前的建議使用 "cd backend && ./main" 啟動
-	// 程式就能直接透過 "programs.json" 讀取到檔案
-	err := loadPrograms("programs.json")
+	// 程式就能直接透過 "micro_programs.json" 讀取到檔案
+	err := loadPrograms()
 	if err != nil {
 		fmt.Printf("初始化失敗: %v\n", err)
 		os.Exit(1)
