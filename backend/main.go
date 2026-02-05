@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -28,6 +29,7 @@ type StudentCourse struct {
 type ProgramRequirement struct {
 	Category   string   `json:"category"`
 	MinCount   int      `json:"min_count"`
+	MaxCount   int      `json:"max_count"`
 	MinCredits float64  `json:"min_credits"`
 	Courses    []string `json:"courses"` // 課程名稱列表
 }
@@ -43,11 +45,12 @@ type Program struct {
 
 // 檢核結果中的一個分類結果
 type CategoryResult struct {
-	Category      string          `json:"category"`
-	RequiredCount int             `json:"requiredCount"`
-	PassedCount   int             `json:"passedCount"`
-	IsMet         bool            `json:"isMet"`
-	PassedCourses []StudentCourse `json:"passedCourses"`
+	Category        string          `json:"category"`
+	RequiredCount   int             `json:"requiredCount"`
+	RequiredCredits float64         `json:"requiredCredits"`
+	PassedCount     int             `json:"passedCount"`
+	IsMet           bool            `json:"isMet"`
+	PassedCourses   []StudentCourse `json:"passedCourses"`
 }
 
 // 最終檢核結果
@@ -270,6 +273,8 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 		})
 		allCategoriesMet = isMet
 	} else {
+		effectiveTotalCredits := 0.0 // 用於計算考慮 MaxCount 後的有效總學分
+
 		// 一般學程邏輯
 		for _, req := range program.Requirements {
 			var passedInThisCategory []StudentCourse // 該分類下已通過的課程紀錄
@@ -289,6 +294,11 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 				}
 			}
 
+			// 根據學分由高到低排序，以便在有 MaxCount 限制時優先採計高學分課程
+			sort.Slice(passedInThisCategory, func(i, j int) bool {
+				return passedInThisCategory[i].Credit > passedInThisCategory[j].Credit
+			})
+
 			// 計算不重複的已通過課程門數
 			uniquePassedCourseNames := make(map[string]bool)
 			passedCreditsInCategory := 0.0
@@ -298,6 +308,20 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 			}
 			passedCount := len(uniquePassedCourseNames)
 
+			// 計算該分類貢獻的有效學分 (處理 MaxCount)
+			creditsContributingToTotal := 0.0
+			limit := len(passedInThisCategory)
+			if req.MaxCount > 0 && limit > req.MaxCount {
+				limit = req.MaxCount
+			}
+			for i := 0; i < limit; i++ {
+				creditsContributingToTotal += passedInThisCategory[i].Credit
+			}
+			if !strings.HasPrefix(req.Category, "先修課程") {
+				effectiveTotalCredits += creditsContributingToTotal
+			}
+
+			// 判斷該分類是否符合要求 (MinCount, MinCredits)
 			isMet := passedCount >= req.MinCount
 			if req.MinCredits > 0 && passedCreditsInCategory < req.MinCredits {
 				isMet = false
@@ -312,13 +336,17 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 			}
 
 			categoryResults = append(categoryResults, CategoryResult{
-				Category:      req.Category,
-				RequiredCount: req.MinCount,
-				PassedCount:   passedCount,
-				IsMet:         isMet,
-				PassedCourses: passedInThisCategory,
+				Category:        req.Category,
+				RequiredCount:   req.MinCount,
+				RequiredCredits: req.MinCredits,
+				PassedCount:     passedCount,
+				IsMet:           isMet,
+				PassedCourses:   passedInThisCategory,
 			})
 		}
+
+		// 更新總通過學分為計算後的有效學分
+		totalPassedCredits = effectiveTotalCredits
 	}
 
 	// 步驟 4: 總結
