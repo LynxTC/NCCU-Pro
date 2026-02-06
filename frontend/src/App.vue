@@ -338,15 +338,19 @@ const safeCheckResults = computed(() => {
                         :class="((cat.requiredCount > 0 || cat.requiredCredits > 0) ? cat.isMet : result.isCompleted) ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'">
                         <div class="flex justify-between items-center text-sm font-medium">
                             <span>{{ cat.category }}</span>
-                            <span>
-                                <template v-if="cat.requiredCount > 0">
+                            <div class="text-right">
+                                <div v-if="cat.requiredCount > 0">
                                     已修畢: <span class="font-bold">{{ cat.passedCount }} 門</span> / 應修: <span
                                         class="font-bold">{{ cat.requiredCount }} 門</span>
-                                </template>
-                                <template v-else>
-                                    門數無強制要求 (依總學分認定)
-                                </template>
-                            </span>
+                                </div>
+                                <div v-if="cat.requiredCredits > 0">
+                                    已修畢: <span class="font-bold">{{ cat.passedCredits.toFixed(1) }} 學分</span> / 應修: <span
+                                        class="font-bold">{{ cat.requiredCredits.toFixed(1) }} 學分</span>
+                                </div>
+                                <div v-if="cat.requiredCount === 0 && cat.requiredCredits === 0">
+                                    門數/學分無強制要求 (依總學分認定)
+                                </div>
+                            </div>
                         </div>
                         <div v-if="cat.limitExceeded" class="text-xs font-bold text-amber-600 mt-1 flex items-center">
                             <span class="mr-1">⚠️</span>
@@ -356,7 +360,7 @@ const safeCheckResults = computed(() => {
                                 class="font-semibold">{{
                                 cat.isMet ? '已達成' : '未達成' }}</span>
                         </p>
-                        <div class="mt-2 text-xs text-gray-700">
+                        <div v-if="cat.category !== '群A + 群B 總修習門數'" class="mt-2 text-xs text-gray-700">
                             <p class="font-semibold mb-1">已通過課程 ({{ cat.passedCourses.length }} 筆紀錄):</p>
                             <ul
                                 class="list-disc list-inside ml-2 max-h-32 overflow-y-auto custom-scrollbar bg-white p-2 rounded">

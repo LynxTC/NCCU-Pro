@@ -52,6 +52,7 @@ type CategoryResult struct {
 	RequiredCount   int             `json:"requiredCount"`
 	RequiredCredits float64         `json:"requiredCredits"`
 	PassedCount     int             `json:"passedCount"`
+	PassedCredits   float64         `json:"passedCredits"`
 	IsMet           bool            `json:"isMet"`
 	PassedCourses   []StudentCourse `json:"passedCourses"`
 	LimitExceeded   bool            `json:"limitExceeded"`
@@ -575,11 +576,13 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 		passedCount := len(uniquePassedCourseNames)
 
 		categoryResults = append(categoryResults, CategoryResult{
-			Category:      program.Requirements[0].Category,
-			RequiredCount: 0, // 門數非強制要求
-			PassedCount:   passedCount,
-			IsMet:         isMet,
-			PassedCourses: completedCourses, // 直接將所有已通過課程賦予
+			Category:        program.Requirements[0].Category,
+			RequiredCount:   0, // 門數非強制要求
+			RequiredCredits: program.MinCredits,
+			PassedCount:     passedCount,
+			PassedCredits:   totalPassedCredits,
+			IsMet:           isMet,
+			PassedCourses:   completedCourses, // 直接將所有已通過課程賦予
 		})
 		allCategoriesMet = isMet
 	} else {
@@ -695,6 +698,7 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 				RequiredCount:   req.MinCount,
 				RequiredCredits: req.MinCredits,
 				PassedCount:     passedCount,
+				PassedCredits:   passedCreditsInCategory,
 				IsMet:           isMet,
 				PassedCourses:   passedInThisCategory,
 				LimitExceeded:   limitExceeded,
@@ -716,16 +720,37 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 					foundB = true
 				}
 			}
-			if foundA && foundB && (countA+countB < 3) {
-				allCategoriesMet = false
-				categoryResults = append(categoryResults, CategoryResult{
+			if foundA && foundB {
+				total := countA + countB
+				isMet := total >= 3
+				msg := ""
+				if !isMet {
+					allCategoriesMet = false
+					msg = "群A與群B合計須至少修習 3 門"
+				}
+				newResult := CategoryResult{
 					Category:        "群A + 群B 總修習門數",
 					RequiredCount:   3,
-					PassedCount:     countA + countB,
-					IsMet:           false,
+					PassedCount:     total,
+					PassedCredits:   0,
+					IsMet:           isMet,
 					LimitExceeded:   false,
-					ExceededMessage: "群A與群B合計須至少修習 3 門",
-				})
+					ExceededMessage: msg,
+					PassedCourses:   []StudentCourse{},
+				}
+				// 將結果插入在 "群B" 之後
+				insertIdx := -1
+				for i, res := range categoryResults {
+					if strings.Contains(res.Category, "群B") {
+						insertIdx = i + 1
+						break
+					}
+				}
+				if insertIdx != -1 && insertIdx <= len(categoryResults) {
+					categoryResults = append(categoryResults[:insertIdx], append([]CategoryResult{newResult}, categoryResults[insertIdx:]...)...)
+				} else {
+					categoryResults = append(categoryResults, newResult)
+				}
 			}
 		}
 
@@ -734,10 +759,15 @@ func checkProgramCompletion(programID string, courses []StudentCourse) CheckResu
 
 		// 如果有通識課程超限，加入一個額外的分類結果顯示
 		if len(program.GeneralEducationCourses) > 0 && geLimitExceeded {
+			geCredits := 0.0
+			for _, c := range gePassed {
+				geCredits += c.Credit
+			}
 			categoryResults = append(categoryResults, CategoryResult{
 				Category:        "通識課程 (全域限制)",
 				RequiredCount:   1, // 顯示限制
 				PassedCount:     len(gePassed),
+				PassedCredits:   geCredits,
 				IsMet:           true,
 				PassedCourses:   gePassed,
 				LimitExceeded:   true,
