@@ -321,11 +321,9 @@ const safeCheckResults = computed(() => {
         <h1 class="text-3xl font-extrabold text-center text-blue-800 mb-2">政大 學程推薦＆檢核（Beta 版）</h1>
         <p class="text-gray-600 mb-6 border-b pb-4 text-center">只要把修過的課程資料上傳到系統，便能馬上給您與學程的匹配度還有修習程度，不再為了複雜的學程規定而頭痛</p>
 
-        <div class="mb-8 p-4 border border-blue-200 bg-blue-50 rounded-lg">
-            <h2 class="text-xl font-semibold text-blue-700 mb-3 flex items-center">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 mr-3 bg-blue-500 text-white text-lg font-bold rounded-full">1</span>
-                上傳全人資料 (JSON 檔)
+        <div class="mb-8 p-6 border border-gray-200 bg-gray-50 rounded-xl shadow-sm">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                📋 事前準備：上傳全人資料 (JSON 檔)
                 <span @click="showDownloadHelp = !showDownloadHelp"
                     class="ml-3 text-sm text-gray-400 cursor-pointer hover:text-gray-600 underline decoration-dotted transition-colors select-none">
                     如何下載全人資料?
