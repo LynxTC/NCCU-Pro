@@ -347,9 +347,14 @@ const safeCheckResults = computed(() => {
 
         <div class="flex items-center mb-6">
             <div class="flex-grow border-t border-gray-300"></div>
-            <span class="flex-shrink mx-4 text-gray-600 font-medium text-center">
-                ⬇️ 可交由系統幫您推薦匹配的學程，或是直接自行選擇個別學程查看進度 ⬇️
-            </span>
+            <div class="flex items-center mx-4 text-gray-600 font-medium text-center">
+                <span class="flex-shrink-0 mr-2">⬇️</span>
+                <span class="flex flex-wrap justify-center gap-x-2">
+                    <span class="whitespace-nowrap">可交由系統幫您推薦匹配的學程</span>
+                    <span class="whitespace-nowrap">或是直接自行選擇個別學程查看進度</span>
+                </span>
+                <span class="flex-shrink-0 ml-2">⬇️</span>
+            </div>
             <div class="flex-grow border-t border-gray-300"></div>
         </div>
 
@@ -357,20 +362,20 @@ const safeCheckResults = computed(() => {
         <div class="flex border-b border-gray-200 mb-6">
             <button @click="activeTab = 'recommendation'"
                 class="flex-1 py-3 px-4 text-center font-medium text-sm focus:outline-none transition-colors duration-200 border-b-2"
-                :class="activeTab === 'recommendation' ? 'border-green-500 text-green-700 bg-green-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'">
+                :class="activeTab === 'recommendation' ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'">
                 🔮 智慧學程推薦
             </button>
             <button @click="activeTab = 'check'"
                 class="flex-1 py-3 px-4 text-center font-medium text-sm focus:outline-none transition-colors duration-200 border-b-2"
-                :class="activeTab === 'check' ? 'border-green-500 text-green-700 bg-green-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'">
+                :class="activeTab === 'check' ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'">
                 ✏️ 學程檢核
             </button>
         </div>
 
         <!-- 新增：學程推薦區塊 -->
-        <div v-if="activeTab === 'recommendation'" class="mb-8 p-4 border border-green-200 bg-green-50 rounded-lg">
-            <h2 class="text-xl font-semibold text-green-700 mb-3 flex items-center">
-                <span class="inline-flex items-center justify-center w-8 h-8 mr-3 bg-green-500 text-white text-lg font-bold rounded-full">A</span>
+        <div v-if="activeTab === 'recommendation'" class="mb-8 p-4 border border-blue-200 bg-blue-50 rounded-lg">
+            <h2 class="text-xl font-semibold text-blue-700 mb-3 flex items-center">
+                <span class="inline-flex items-center justify-center w-8 h-8 mr-3 bg-blue-500 text-white text-lg font-bold rounded-full">A</span>
                 智慧學程推薦排行榜 (Top 5)
             </h2>
             <p class="text-sm text-gray-600 mb-4">
@@ -378,7 +383,7 @@ const safeCheckResults = computed(() => {
             </p>
             
             <button @click="executeRecommendation" :disabled="!studentFile || isRecommending"
-                class="mb-4 px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
+                class="mb-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center">
                 <span v-if="isRecommending" class="mr-2">
                     <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </span>
@@ -388,7 +393,7 @@ const safeCheckResults = computed(() => {
             <div v-if="hasRunRecommendation" class="space-y-3 mt-2">
                 <!-- 前往檢核區按鈕 (頂部) -->
                 <div class="mb-4 text-center">
-                    <button @click="activeTab = 'check'" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition duration-200 flex items-center justify-center mx-auto">
+                    <button @click="activeTab = 'check'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition duration-200 flex items-center justify-center mx-auto">
                         前往學程檢核區查看詳情
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                     </button>
@@ -398,7 +403,7 @@ const safeCheckResults = computed(() => {
                     尚無符合推薦門檻的學程。
                 </div>
                 <div v-for="rec in rankedRecommendations" :key="rec.programID" 
-                     class="bg-white p-4 rounded-lg border border-green-100 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                     class="bg-white p-4 rounded-lg border border-blue-100 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
                         <!-- 排名徽章 -->
                         <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full font-bold text-xl shadow-sm"
@@ -406,7 +411,7 @@ const safeCheckResults = computed(() => {
                                  'bg-yellow-100 text-yellow-700 border-2 border-yellow-300': rec.rank === 1,
                                  'bg-gray-100 text-gray-600 border-2 border-gray-300': rec.rank === 2,
                                  'bg-orange-100 text-orange-700 border-2 border-orange-300': rec.rank === 3,
-                                 'bg-green-50 text-green-600 border border-purple-200': rec.rank > 3
+                                 'bg-blue-50 text-blue-600 border border-blue-200': rec.rank > 3
                              }">
                             {{ rec.rank }}
                         </div>
@@ -423,7 +428,7 @@ const safeCheckResults = computed(() => {
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
-                            <div class="text-2xl font-bold text-green-600" :class="{
+                            <div class="text-2xl font-bold text-blue-600" :class="{
                                 'opacity-100': rec.rank === 1,
                                 'opacity-80': rec.rank === 2,
                                 'opacity-60': rec.rank === 3,
@@ -439,8 +444,8 @@ const safeCheckResults = computed(() => {
                 </div>
 
                 <!-- 前往檢核區按鈕 -->
-                <div v-if="hasRunRecommendation" class="mt-6 text-center border-t border-purple-200 pt-4">
-                    <button @click="activeTab = 'check'" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow transition duration-200 flex items-center justify-center mx-auto">
+                <div v-if="hasRunRecommendation" class="mt-6 text-center border-t border-blue-200 pt-4">
+                    <button @click="activeTab = 'check'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition duration-200 flex items-center justify-center mx-auto">
                         前往學程檢核區查看詳情
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                     </button>
@@ -449,10 +454,10 @@ const safeCheckResults = computed(() => {
         </div>
 
         <div v-if="activeTab === 'check'">
-        <div class="mb-8 p-4 border border-green-200 bg-green-50 rounded-lg">
-            <h2 class="text-xl font-semibold text-green-700 mb-4 flex items-center">
+        <div class="mb-8 p-4 border border-blue-200 bg-blue-50 rounded-lg">
+            <h2 class="text-xl font-semibold text-blue-700 mb-4 flex items-center">
                 <span
-                    class="inline-flex items-center justify-center w-8 h-8 mr-3 bg-green-500 text-white text-lg font-bold rounded-full">B</span>
+                    class="inline-flex items-center justify-center w-8 h-8 mr-3 bg-blue-500 text-white text-lg font-bold rounded-full">B</span>
                 選取欲檢核的學分學程 (可複選)
             </h2>
 
@@ -538,11 +543,11 @@ const safeCheckResults = computed(() => {
                 programSelectionStatus }}</p>
 
             <!-- 顯示已選擇的學程 -->
-            <div v-if="selectedProgramsList.length > 0" class="mt-4 pt-4 border-t border-green-200">
-                <p class="text-lg font-bold text-green-800 mb-2">已選擇的學程（點擊可取消）：</p>
+            <div v-if="selectedProgramsList.length > 0" class="mt-4 pt-4 border-t border-blue-200">
+                <p class="text-lg font-bold text-blue-800 mb-2">已選擇的學程（點擊可取消）：</p>
                 <div class="flex flex-wrap gap-2">
                     <span v-for="p in selectedProgramsList" :key="p.id" @click="removeProgram(p.id)"
-                        class="px-3 py-1 bg-white text-green-700 text-sm font-medium rounded-full border border-green-300 shadow-sm cursor-pointer hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-colors flex items-center group">
+                        class="px-3 py-1 bg-white text-blue-700 text-sm font-medium rounded-full border border-blue-300 shadow-sm cursor-pointer hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-colors flex items-center group">
                         {{ p.name }}
                     </span>
                 </div>
