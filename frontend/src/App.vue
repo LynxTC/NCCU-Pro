@@ -290,14 +290,24 @@ const rankedRecommendations = computed(() => {
         if (Math.abs(a.remaining - b.remaining) > 0.1) {
             return a.remaining - b.remaining;
         }
+        // 若剩餘學分相同，優先顯示已完全通過者
+        if (a.isCompleted !== b.isCompleted) {
+            return a.isCompleted ? -1 : 1;
+        }
         return b.completionRate - a.completionRate;
     });
 
     // 賦予排名 (處理並列)
     let currentRank = 1;
     return list.map((rec, index) => {
-        if (index > 0 && Math.abs(rec.remaining - list[index - 1].remaining) > 0.1) {
-            currentRank++;
+        if (index > 0) {
+            const prev = list[index - 1];
+            const remainingDiff = Math.abs(rec.remaining - prev.remaining) > 0.1;
+            const statusDiff = rec.isCompleted !== prev.isCompleted;
+
+            if (remainingDiff || statusDiff) {
+                currentRank++;
+            }
         }
         return { ...rec, rank: currentRank };
     });
@@ -510,7 +520,7 @@ onUnmounted(() => {
                                         完成度 <span class="ml-1 text-emerald-600 font-bold">100%</span>
                                     </template>
                                     <template v-else-if="rec.completionRate >= 1">
-                                        <span class="text-amber-600 font-bold">尚有其他條件未滿足，加入檢核以了解更多</span>
+                                        <span class="text-amber-600 font-bold">尚有其他條件未滿足，加入檢核瞭解更多</span>
                                     </template>
                                     <template v-else>
                                         完成度 <span class="ml-1 text-emerald-600 font-bold">{{ (rec.completionRate *
