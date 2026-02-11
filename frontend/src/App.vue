@@ -426,9 +426,12 @@ onUnmounted(() => {
                     class="text-2xl sm:text-3xl font-bold text-emerald-900 mb-4 flex items-center font-serif tracking-wide">
                     智慧學程推薦排行榜
                 </h2>
-                <p class="text-stone-600 mb-8 text-lg leading-relaxed">
-                    系統將比對您的修課紀錄與所有學程標準，推薦匹配度較高的學程供您參考<br>
-                    <span class="font-bold font-serif text-stone-700 text-xl">錯失任何一個學程通過的機會是不可能的</span>
+                <blockquote
+                    class="mb-8 border-l-4 border-emerald-100 pl-4 py-2 bg-stone-50/80 rounded-r-xl text-stone-700 text-center text-xl font-bold font-serif shadow-sm">
+                    「錯失任何一個學程通過的機會是不可能的。」
+                </blockquote>
+                <p class="text-stone-600 mb-6 text-lg leading-relaxed">
+                    系統將比對您的修課紀錄與所有學程標準，推薦匹配度較高的學程供您參考
                 </p>
 
                 <button @click="startRecommendation" :disabled="!studentFile || isRecommending"
@@ -638,7 +641,7 @@ onUnmounted(() => {
                     <!-- 專長學程 (僅在選擇學分學程時顯示) -->
                     <div v-if="Object.keys(secondaryPrograms).length > 0">
                         <h3 class="text-lg font-bold text-emerald-800 mb-4 flex items-center">
-                            <span class="w-1.5 h-6 bg-amber-500 rounded-full mr-2"></span>
+                            <span class="w-1.5 h-6 bg-emerald-500 rounded-full mr-2"></span>
                             院級專長學程
                         </h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
