@@ -363,7 +363,7 @@ onUnmounted(() => {
         <div
             class="mb-10 p-8 border-2 border-dashed border-stone-200 bg-stone-50/50 rounded-2xl hover:bg-stone-100/50 transition-colors duration-300 animate-entry delay-100">
             <h2 class="text-2xl font-bold text-stone-700 mb-4 flex items-center font-serif">
-                <span class="mr-3 text-3xl">📂</span> 事前準備：上傳全人資料
+                <span class="mr-3 text-3xl">📂</span> 上傳全人資料
                 <span @click="showDownloadHelp = !showDownloadHelp"
                     class="ml-auto text-sm text-stone-500 cursor-pointer hover:text-stone-700 hover:underline transition-colors select-none font-sans font-medium">
                     如何取得全人資料 JSON 檔案?
