@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&family=Outfit:wght@300;400;500;700&display=swap');
+
 /* ------------------------------------ */
 /* 1. 導入 Tailwind CSS 基礎指令 */
 /* ------------------------------------ */
@@ -11,21 +13,80 @@
 
 /* 自定義滾動條樣式 */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 4px;
+    background-color: #d6d3d1;
+    border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
 }
 
 /* 字體設定 */
 body {
-    /* 這裡假設您希望繼續使用 inter 字體 */
-    font-family: 'Inter', 'Noto Sans TC', sans-serif;
-    background-color: #f8fafc;
+    font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+    background-color: #F2F0E9;
+    /* Alabaster/Linen */
+    background-image:
+        radial-gradient(at 0% 0%, hsla(34, 50%, 92%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(180, 20%, 95%, 1) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(210, 30%, 93%, 1) 0, transparent 50%);
+    background-size: 100% 100vh;
+    background-attachment: fixed;
+    color: #1c1917;
+    overflow-x: hidden;
+}
+
+.font-serif {
+    font-family: 'Fraunces', 'Noto Serif TC', serif !important;
+}
+
+.font-sans {
+    font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.02),
+        0 2px 4px -1px rgba(0, 0, 0, 0.02),
+        0 20px 40px -10px rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-entry {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    /* Start hidden */
+}
+
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
 }
