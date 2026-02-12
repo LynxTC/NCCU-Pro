@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&family=Outfit:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&family=Outfit:wght@300;400;500;700&display=swap');
 
 /* ------------------------------------ */
 /* 1. 導入 Tailwind CSS 基礎指令 */
@@ -27,7 +27,7 @@
 
 /* 字體設定 */
 body {
-    font-family: 'Outfit', 'Noto Sans TC', sans-serif;
+    font-family: 'Outfit', 'Noto Sans TC', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
     background-color: #F2F0E9;
     /* Alabaster/Linen */
     background-image:
@@ -41,7 +41,7 @@ body {
 }
 
 .font-serif {
-    font-family: 'Fraunces', 'Noto Serif TC', serif !important;
+    font-family: 'Fraunces', 'Noto Serif TC', 'DFKai-SB', '標楷體', serif !important;
 }
 
 .font-sans {
