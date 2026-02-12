@@ -830,7 +830,7 @@ func processStandardRequirements(localRequirements []ProgramRequirement, complet
 		// 檢查是否有被 Patent 邏輯 Cap 的課程
 		if hasCappedCourse && !limitExceeded {
 			limitExceeded = true
-			exceededMsg = "部分課程因超過群組學分上限而不計分或減修"
+			exceededMsg = "部分課程因超過分項要求學分上限而不計分或減修"
 		}
 		// 檢查 MaxCount (針對總數)
 		if req.MaxCount > 0 && passedCount > req.MaxCount && !limitExceeded {

@@ -665,8 +665,15 @@
         "human_resource_management_introductory": {
             "name": "人力資源管理入門微學程",
             "min_credits": 9.0,
-            "description": "至少修滿 9 學分（必修 3 + 選修 6）",
+            "description": "至少修滿 9 學分（必修 3 + 選修 6），並先修畢「管理學」",
             "requirements": [
+                {
+                    "category": "先修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "管理學"
+                    ]
+                },
                 {
                     "category": "必修課程",
                     "min_credits": 3.0,
@@ -693,8 +700,15 @@
         "supply_chain_management_introductory": {
             "name": "供應鏈管理入門微學程",
             "min_credits": 9.0,
-            "description": "至少修滿 9 學分（必修 3 + 選修 6）",
+            "description": "至少修滿 9 學分（必修 3 + 選修 6），並先修畢「管理學」",
             "requirements": [
+                {
+                    "category": "先修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "管理學"
+                    ]
+                },
                 {
                     "category": "必修課程",
                     "min_credits": 3.0,

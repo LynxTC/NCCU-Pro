@@ -105,15 +105,16 @@ type StudentDataWrapper []struct {
 
 // 推薦結果結構
 type Recommendation struct {
-	ProgramID           string  `json:"programID"`
-	ProgramName         string  `json:"programName"`
-	Type                string  `json:"type"`
-	TotalPassedCredits  float64 `json:"totalPassedCredits"`
-	MinCredits          float64 `json:"minCredits"`
-	PassedPrereqCredits float64 `json:"passedPrereqCredits"` // 新增：已修先修學分
-	CompletionRate      float64 `json:"completionRate"`
-	IsCompleted         bool    `json:"isCompleted"`
-	IsRestricted        bool    `json:"isRestricted"`
+	ProgramID           string           `json:"programID"`
+	ProgramName         string           `json:"programName"`
+	Type                string           `json:"type"`
+	TotalPassedCredits  float64          `json:"totalPassedCredits"`
+	MinCredits          float64          `json:"minCredits"`
+	PassedPrereqCredits float64          `json:"passedPrereqCredits"` // 新增：已修先修學分
+	CompletionRate      float64          `json:"completionRate"`
+	IsCompleted         bool             `json:"isCompleted"`
+	IsRestricted        bool             `json:"isRestricted"`
+	CategoryResults     []CategoryResult `json:"categoryResults"`
 }
 
 // --- 全局變數 ---
@@ -528,6 +529,7 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 				CompletionRate:      rate,
 				IsCompleted:         result.IsCompleted,
 				IsRestricted:        isRestricted,
+				CategoryResults:     result.CategoryResults,
 			})
 		}
 	}

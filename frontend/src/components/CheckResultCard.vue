@@ -47,9 +47,9 @@ defineProps({
                     :class="result.totalCreditsMet ? 'text-emerald-700 font-bold' : 'text-rose-700'">{{
                         result.totalPassedCredits }} 學分</span>
             </div>
-            <p class="mt-3 text-xs font-bold uppercase tracking-wide"
+            <p class="mt-3 text-xl font-bold uppercase tracking-wide"
                 :class="result.totalCreditsMet ? 'text-emerald-600' : 'text-rose-600'">
-                {{ result.totalCreditsMet ? '總學分要求已達成' : '總學分要求尚未達成' }}
+                {{ result.totalCreditsMet ? '已達成' : '尚未達成' }}
             </p>
         </div>
 
@@ -69,7 +69,7 @@ defineProps({
                         {{ cat.passedCredits.toFixed(1) }} / {{ cat.requiredCredits.toFixed(1) }} 學分
                     </div>
                     <div v-if="cat.requiredCount === 0 && cat.requiredCredits === 0">
-                        門數/學分無強制要求 (依總學分認定)
+                        門數/學分無要求下限 (依總學分認定)
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@ defineProps({
                 <p class="font-bold mb-1 opacity-70">已通過課程 ({{ cat.passedCourses.length }}):</p>
                 <ul
                     class="list-none space-y-1 max-h-32 overflow-y-auto custom-scrollbar bg-white/60 p-2 rounded border border-black/5">
-                    <li v-if="cat.passedCourses.length === 0" class="italic opacity-50">無符合要求的已通過課程</li>
+                    <li v-if="cat.passedCourses.length === 0" class="italic opacity-50">無符合要求的課程</li>
                     <li v-for="c in cat.passedCourses" :key="c.name + c.semester">{{ c.name }} ({{
                         c.credit.toFixed(1) }} 學分<span v-if="c.isCapped" class="text-amber-600 font-bold ml-1"
                             title="此課程因超過上限而被調整學分">*</span>, {{
@@ -99,14 +99,13 @@ defineProps({
         <!-- 平均成績檢核區塊 (僅針對特定學程顯示) -->
         <div v-if="result.avgScoreRequired && result.totalCreditsMet"
             class="mb-4 p-4 bg-white/60 rounded-xl border border-black/5 backdrop-blur-sm">
-            <h4 class="text-md font-bold text-stone-800 mb-2 font-serif">認列課程平均成績檢核</h4>
-            <div class="flex justify-between text-sm">
-                <span class="font-medium text-stone-600">認列課程平均成績:</span>
-                <span class="font-mono" :class="result.avgScoreMet ? 'text-emerald-700 font-bold' : 'text-rose-700'">{{
+            <div class="flex justify-between">
+                <span class="font-medium text-md font-bold text-stone-600">認列課程平均成績：</span>
+                <span class="font-mono text-sm" :class="result.avgScoreMet ? 'text-emerald-700 font-bold' : 'text-rose-700'">{{
                     result.avgScore }} 分</span>
             </div>
-            <p class="mt-2 text-xs font-bold" :class="result.avgScoreMet ? 'text-emerald-600' : 'text-rose-600'">
-                {{ result.avgScoreMet ? `平均成績已達 ${result.avgScoreThreshold} 分標準` : `平均成績未達
+            <p class="mt-2 text-large font-bold" :class="result.avgScoreMet ? 'text-emerald-600' : 'text-rose-600'">
+                {{ result.avgScoreMet ? `已達 ${result.avgScoreThreshold} 分標準` : `未達
                 ${result.avgScoreThreshold} 分標準` }}
             </p>
         </div>

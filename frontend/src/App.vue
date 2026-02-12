@@ -282,10 +282,27 @@ const selectedProgramsList = computed(() => {
 
 const rankedRecommendations = computed(() => {
     // 複製一份陣列以避免修改原始資料，並計算剩餘學分
-    const list = recommendationResults.value.map(rec => ({
-        ...rec,
-        remaining: Math.max(0, rec.minCredits - rec.totalPassedCredits)
-    }));
+    const list = recommendationResults.value.map(rec => {
+        const totalRemaining = Math.max(0, rec.minCredits - rec.totalPassedCredits);
+        let remaining = totalRemaining;
+
+        if (rec.categoryResults && Array.isArray(rec.categoryResults)) {
+            // 1. 若該學程所有分項皆設有 "min_credits" (即 requiredCredits > 0)
+            const allCategoriesHaveLimit = rec.categoryResults.every(cat => (cat.requiredCredits || 0) > 0);
+
+            if (allCategoriesHaveLimit) {
+                // 將各未滿足分項剩餘學分加總
+                const sumCategoryRemaining = rec.categoryResults.reduce((sum, cat) => {
+                    return sum + Math.max(0, (cat.requiredCredits || 0) - cat.passedCredits);
+                }, 0);
+                // 並與 "總要求學分與已修學分差值" 比較，以剩餘較多者為計算標準
+                remaining = Math.max(sumCategoryRemaining, totalRemaining);
+            }
+            // 2. 若有任一分項未制定下限，則直接以總要求學分剩餘為準 (即 remaining = totalRemaining)
+        }
+
+        return { ...rec, remaining };
+    });
 
     if (list.length === 0) return [];
 
@@ -465,10 +482,8 @@ onUnmounted(() => {
                         class="group bg-white p-6 rounded-2xl border border-stone-100 shadow-sm transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden">
                         <!-- Decorative background accent -->
                         <div class="absolute top-0 left-0 w-1.5 h-full transition-colors duration-300" :class="{
-                            'bg-stone-300': rec.isRestricted,
-                            'bg-emerald-600': !rec.isRestricted && rec.isCompleted,
-                            'bg-amber-500': !rec.isRestricted && !rec.isCompleted && rec.completionRate >= 1,
-                            'bg-emerald-200': !rec.isRestricted && !rec.isCompleted && rec.completionRate < 1
+                            'bg-emerald-600': rec.isCompleted,
+                            'bg-stone-300': !rec.isCompleted
                         }">
                         </div>
 
@@ -626,11 +641,10 @@ onUnmounted(() => {
                             <div v-for="(program, id) in primaryPrograms" :key="id"
                                 class="flex items-start p-3 rounded-lg hover:bg-stone-50 transition-colors cursor-pointer"
                                 @click="!selectedProgramIds.includes(id) ? selectedProgramIds.push(id) : removeProgram(id)">
-                                <input :id="id" type="checkbox" :value="id" v-model="selectedProgramIds"
+                                <input type="checkbox" :value="id" v-model="selectedProgramIds"
                                     class="mt-1.5 h-5 w-5 text-emerald-700 border-stone-300 rounded focus:ring-emerald-500 shrink-0 cursor-pointer accent-emerald-600"
                                     @click.stop>
-                                <label :for="id"
-                                    class="ml-3 text-lg font-bold text-stone-700 cursor-pointer tracking-wide">
+                                <label class="ml-3 text-lg font-bold text-stone-700 cursor-pointer tracking-wide">
                                     {{ program.name }}
                                     <p class="text-xs text-stone-500 mt-1 font-normal leading-relaxed">{{
                                         program.description }}
@@ -650,11 +664,10 @@ onUnmounted(() => {
                             <div v-for="(program, id) in secondaryPrograms" :key="id"
                                 class="flex items-start p-3 rounded-lg hover:bg-stone-50 transition-colors cursor-pointer"
                                 @click="!selectedProgramIds.includes(id) ? selectedProgramIds.push(id) : removeProgram(id)">
-                                <input :id="id" type="checkbox" :value="id" v-model="selectedProgramIds"
+                                <input type="checkbox" :value="id" v-model="selectedProgramIds"
                                     class="mt-1.5 h-5 w-5 text-emerald-700 border-stone-300 rounded focus:ring-emerald-500 shrink-0 cursor-pointer accent-emerald-600"
                                     @click.stop>
-                                <label :for="id"
-                                    class="ml-3 text-lg font-bold text-stone-700 cursor-pointer tracking-wide">
+                                <label class="ml-3 text-lg font-bold text-stone-700 cursor-pointer tracking-wide">
                                     {{ program.name }}
                                     <p class="text-xs text-stone-500 mt-1 font-normal leading-relaxed">{{
                                         program.description }}

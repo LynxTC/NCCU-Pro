@@ -463,15 +463,13 @@
         "human_resource_management_undergraduate": {
             "name": "人力資源管理學程（學士班）",
             "min_credits": 18.0,
-            "description": "修習認列科目達 18 學分（必修 3 門 + 核心 1 門 + 程序 2 門）",
+            "description": "修習認列科目達 18 學分（必修 3 門 + 核心 1 門 + 程序 2 門），並先修畢「管理學」",
             "requirements": [
                 {
                     "category": "先修課程",
-                    "min_count": 1,
+                    "min_credits": 3.0,
                     "courses": [
-                        "管理學",
-                        "企業管理",
-                        "組織理論與管理"
+                        "管理學"
                     ]
                 },
                 {
@@ -597,7 +595,7 @@
         "human_resource_management_master": {
             "name": "人力資源管理學程（碩士班）",
             "min_credits": 18.0,
-            "description": "修習認列科目達 18 學分（必修 3 門 + 核心 1 門 + 程序 2 門）",
+            "description": "修習認列科目達 18 學分（必修 3 門 + 核心 1 門 + 程序 2 門），並先修畢「管理學」、「企業管理」或「組織理論與管理」其中一門課程",
             "requirements": [
                 {
                     "category": "先修課程",
