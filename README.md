@@ -30,14 +30,17 @@
 
 ```text
 program-checker/
-├── backend/                  # Go 後端核心
-│   ├── main.go               # API 服務與檢核邏輯
-│   ├── credit_programs.json  # 學分學程資料庫
-│   ├── micro_programs.json   # 微學程資料庫
+├── backend/                             # Go 後端核心
+│   ├── main.go                          # API 服務與檢核邏輯
+│   ├── special_handlers.go              # 特殊學程規則與進階檢核邏輯
+│   ├── credit_programs.json             # 學分學程資料庫
+│   ├── micro_programs.json              # 微學程資料庫
+│   ├── commerce_specialty_programs.json # 院級專長學程資料庫
 │   └── ...
-├── frontend/                 # Vue 3 前端介面
+├── frontend/                            # Vue 3 前端介面
+│   ├── .env.example                     # 環境變數範例
 │   └── ...
-└── README.md                 # 說明文件
+└── README.md                            # 說明文件
 ```
 
 ## **快速開始 (開發環境)**
@@ -56,7 +59,7 @@ program-checker/
    * `commerce_specialty_programs.json`
 3. 啟動服務 (預設 Port 8080)：
    ```bash
-   go run main.go
+   go run .
    ```
 
 ### **步驟 2: 前端環境 (Vue)**
