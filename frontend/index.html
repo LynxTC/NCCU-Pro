@@ -7,7 +7,8 @@
     <title>政大學程潛能分析師 - 智慧學程推薦與個人化解析</title>
     <meta name="google-site-verification" content="-RWYKRKirXhdxzsP05TBWlDe9D-4EP3ezkQVUqrEmVM" />
     <meta name="author" content="𤫹焈焈麀學程檢核器開發團隊">
-    <meta name="description" content="你的學分比你想得更有價值！「政大學程潛能分析師」挖掘潛在的學分學程與微學程資格。一鍵上傳修課紀錄，即時試算學分學程與微學程進度。讓每一學分都發揮最大價值，掌握所有通過學程的良機。">
+    <meta name="description"
+        content="你的學分比你想得更有價值！「政大學程潛能分析師」挖掘潛在的學分學程與微學程資格。一鍵上傳修課紀錄，即時試算學分學程與微學程進度。讓每一學分都發揮最大價值，掌握所有通過學程的良機。">
     <meta property="og:url" content="https://program-checker.onrender.com/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="政大學程潛能分析師 - 找出你不曾發現的專屬學程">
@@ -16,14 +17,24 @@
     <meta property="og:image" content="https://i.meee.com.tw/1kFuNNB.png" />
     <meta property="og:image:alt" content="一張寫有「政大學程潛能分析師」，含有書籍、學士帽等等代表大學的元素，背景是圖書館的圖片。">
 
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="icon" href="/icon-192.png">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4A90E2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 
 <body>
     <div id="app"></div>
 
     <script type="module" src="/src/main.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script>
 </body>
 
 </html>

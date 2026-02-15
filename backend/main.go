@@ -622,6 +622,10 @@ func main() {
 	r.HandleFunc("/api/check", checkProgramsHandler).Methods("POST", "OPTIONS")
 	r.HandleFunc("/api/recommend", recommendProgramsHandler).Methods("POST", "OPTIONS")
 
+	// 設定靜態檔案服務 (PWA 支援)
+	// 前端檔案位於 ../frontend 目錄 (假設 backend 與 frontend 為同級目錄)
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("../frontend")))
+
 	// 3. 啟動伺服器：務必監聽 "0.0.0.0"
 	fmt.Printf("伺服器已啟動於 Port %s...\n", port)
 	err = http.ListenAndServe(":"+port, commonMiddleware(r))
