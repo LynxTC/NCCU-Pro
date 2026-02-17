@@ -425,7 +425,8 @@ onUnmounted(() => {
             class="text-4xl sm:text-5xl md:text-6xl font-bold text-center text-emerald-700 mb-2 tracking-tight font-serif">
             ProAnalyst
         </h1>
-        <p class="text-xl sm:text-2xl font-bold text-center text-stone-700 mb-6 tracking-[0.3em] font-serif">
+        <p
+            class="text-lg sm:text-xl md:text-2xl font-bold text-center text-stone-700 mb-6 tracking-widest md:tracking-[0.3em] font-serif">
             個人化學程潛能分析
         </p>
         <p class="text-stone-600 mb-2 text-center text-lg max-w-2xl mx-auto leading-relaxed">
