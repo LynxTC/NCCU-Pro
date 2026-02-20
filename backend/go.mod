@@ -1,4 +1,4 @@
-module internal.company/program-checker
+module internal.company/NCCU-Pro
 
 go 1.25.4
 

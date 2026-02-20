@@ -422,11 +422,11 @@ onUnmounted(() => {
 <template>
     <div class="max-w-5xl mx-auto glass-panel rounded-3xl p-8 sm:p-12 my-8 sm:my-12 animate-entry">
         <h1 class="text-5xl sm:text-6xl font-bold text-center text-emerald-700 mb-2 tracking-tight font-serif">
-            ProAnalyst
+            <span class="text-blue-500">NCCU</span> Pro
         </h1>
         <p
             class="text-xl sm:text-2xl font-bold text-center text-stone-700 mb-6 tracking-widest tracking-[0.3em] font-serif">
-            個人化學程潛能分析
+            政大個人化學程潛能分析
         </p>
         <p class="text-stone-600 mb-2 text-center text-lg max-w-2xl mx-auto leading-relaxed">
             上傳修課紀錄，即時分析與學程匹配度及修習進度<br>不再錯過任何一個學程的申請，掌握所有通過學程的良機
@@ -779,10 +779,10 @@ onUnmounted(() => {
                     class="hover:text-emerald-600 transition-colors font-medium">服務條款</button>
             </div>
             <div class="flex justify-center mb-2">
-                <img src="./assets/logo_transparent.svg" alt="ProAnalyst Logo"
+                <img src="./assets/logo_transparent.svg" alt="NCCU Pro Logo"
                     class="h-8 w-auto transition-opacity duration-300" />
             </div>
-            <p class="mb-2">&copy; {{ new Date().getFullYear() }} 𤫹焈焈麀普羅安納利斯特團隊. Licensed under the MIT License.</p>
+            <p class="mb-2">&copy; {{ new Date().getFullYear() }} 𤫹焈焈麀普羅團隊. Licensed under the MIT License.</p>
         </footer>
     </div>
 
