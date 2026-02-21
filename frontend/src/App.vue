@@ -779,8 +779,7 @@ onUnmounted(() => {
                     class="hover:text-emerald-600 transition-colors font-medium">服務條款</button>
             </div>
             <div class="flex justify-center mb-2">
-                <img src="./assets/logo_transparent.svg" alt="NCCU Pro Logo"
-                    class="h-8 w-auto transition-opacity duration-300" />
+                <img src="./assets/logo.svg" alt="NCCU Pro Logo" class="h-8 w-auto transition-opacity duration-300" />
             </div>
             <p class="mb-2">&copy; {{ new Date().getFullYear() }} 𤫹焈焈麀普羅團隊. Licensed under the MIT License.</p>
         </footer>
