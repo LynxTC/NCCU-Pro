@@ -290,57 +290,13 @@ const visibleCheckResults = computed(() => {
 });
 
 const rankedRecommendations = computed(() => {
-    // 複製一份陣列以避免修改原始資料，並計算剩餘學分
-    const list = recommendationResults.value.map(rec => {
-        const totalRemaining = Math.max(0, rec.minCredits - rec.totalPassedCredits);
-        let remaining = totalRemaining;
-
-        if (rec.categoryResults && Array.isArray(rec.categoryResults)) {
-            // 1. 若該學程所有分項皆設有 "min_credits" (即 requiredCredits > 0)
-            const allCategoriesHaveLimit = rec.categoryResults.every(cat => (cat.requiredCredits || 0) > 0);
-
-            if (allCategoriesHaveLimit) {
-                // 將各未滿足分項剩餘學分加總
-                const sumCategoryRemaining = rec.categoryResults.reduce((sum, cat) => {
-                    return sum + Math.max(0, (cat.requiredCredits || 0) - cat.passedCredits);
-                }, 0);
-                // 並與 "總要求學分與已修學分差值" 比較，以剩餘較多者為計算標準
-                remaining = Math.max(sumCategoryRemaining, totalRemaining);
-            }
-            // 2. 若有任一分項未制定下限，則直接以總要求學分剩餘為準 (即 remaining = totalRemaining)
-        }
-
-        return { ...rec, remaining };
-    });
-
-    if (list.length === 0) return [];
-
-    // 排序：主要以剩餘學分 (由少至多)，次要以完成度 (由高至低)
-    list.sort((a, b) => {
-        if (Math.abs(a.remaining - b.remaining) > 0.1) {
-            return a.remaining - b.remaining;
-        }
-        // 若剩餘學分相同，優先顯示已完全通過者
-        if (a.isCompleted !== b.isCompleted) {
-            return a.isCompleted ? -1 : 1;
-        }
-        return b.completionRate - a.completionRate;
-    });
-
-    // 賦予排名 (處理並列)
-    let currentRank = 1;
-    return list.map((rec, index) => {
-        if (index > 0) {
-            const prev = list[index - 1];
-            const remainingDiff = Math.abs(rec.remaining - prev.remaining) > 0.1;
-            const statusDiff = rec.isCompleted !== prev.isCompleted;
-
-            if (remainingDiff || statusDiff) {
-                currentRank++;
-            }
-        }
-        return { ...rec, rank: currentRank };
-    });
+    // 直接使用後端回傳的排序與數值 (包含 remainingCredits 與 rank)
+    // 前端不再重新計算，以避免邏輯不一致
+    return recommendationResults.value.map(rec => ({
+        ...rec,
+        remaining: rec.remainingCredits, // 對應 template 使用的欄位名稱
+        rank: rec.rank                   // 使用後端計算的名次
+    }));
 });
 
 const totalPages = computed(() => {

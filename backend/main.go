@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"sort"
@@ -115,6 +116,8 @@ type Recommendation struct {
 	MinCredits          float64          `json:"minCredits"`
 	PassedPrereqCredits float64          `json:"passedPrereqCredits"` // 新增：已修先修學分
 	CompletionRate      float64          `json:"completionRate"`
+	RemainingCredits    float64          `json:"remainingCredits"` // 新增：剩餘需修學分
+	Rank                int              `json:"rank"`             // 新增：名次
 	IsCompleted         bool             `json:"isCompleted"`
 	IsRestricted        bool             `json:"isRestricted"`
 	CategoryResults     []CategoryResult `json:"categoryResults"`
@@ -505,10 +508,26 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 		passedPrereq := 0.0
 		requiredPrereq := 0.0
 
+		// 新增：計算分項剩餘學分 (用於處理「總學分夠但核心分類未修滿」的情況)
+		sumCategoryRemaining := 0.0
+		allCategoriesHaveCredits := true
+		hasMainCategories := false
+
 		for _, cat := range result.CategoryResults {
 			if strings.HasPrefix(cat.Category, "先修課程") {
 				passedPrereq += cat.PassedCredits
 				requiredPrereq += cat.RequiredCredits
+			} else {
+				hasMainCategories = true
+				if cat.RequiredCredits > 0 {
+					rem := cat.RequiredCredits - cat.PassedCredits
+					if rem > 0 {
+						sumCategoryRemaining += rem
+					}
+				} else {
+					// 若某個主分類沒有設定學分下限 (例如僅規定門數，或純選修)，則不適用此加總邏輯
+					allCategoriesHaveCredits = false
+				}
 			}
 		}
 
@@ -516,13 +535,33 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 		totalPassed := passed + passedPrereq
 		totalRequired := min + requiredPrereq
 
+		// 計算剩餘學分 (修正：分開計算主學程與先修課程，避免先修溢出扣抵主學程)
+		remainingMain := min - passed
+		if remainingMain < 0 {
+			remainingMain = 0
+		}
+
+		// 應用使用者要求的邏輯：若所有主分類皆有設定 min_credits，則比較「分項剩餘加總」與「總剩餘」，取大者
+		// 這能解決「資訊安全微學程」這類基礎修很多但進階沒修，導致總學分夠但其實未達標的問題
+		if hasMainCategories && allCategoriesHaveCredits {
+			if sumCategoryRemaining > remainingMain {
+				remainingMain = sumCategoryRemaining
+			}
+		}
+
+		remainingPrereq := requiredPrereq - passedPrereq
+		if remainingPrereq < 0 {
+			remainingPrereq = 0
+		}
+		remaining := remainingMain + remainingPrereq
+
 		rate := 0.0
 		if totalRequired > 0 {
 			rate = totalPassed / totalRequired
 		}
 
-		// 推薦門檻：完成度達 20% 以上 (避免僅修一門通識就推薦所有學程)
-		if rate >= 0.2 {
+		// 推薦門檻：完成度達 30% 以上 (避免僅修一門通識就推薦所有學程)
+		if rate >= 0.3 {
 			recommendations = append(recommendations, Recommendation{
 				ProgramID:           id,
 				ProgramName:         program.Name,
@@ -532,6 +571,7 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 				MinCredits:          min,
 				PassedPrereqCredits: passedPrereq,
 				CompletionRate:      rate,
+				RemainingCredits:    remaining,
 				IsCompleted:         result.IsCompleted,
 				IsRestricted:        isRestricted,
 				CategoryResults:     result.CategoryResults,
@@ -539,8 +579,12 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// 排序：依完成度由高至低
+	// 排序：優先依「剩餘學分」由少到多，若相同則依「完成度」由高至低
 	sort.Slice(recommendations, func(i, j int) bool {
+		// 使用 epsilon 避免浮點數比較誤差
+		if math.Abs(recommendations[i].RemainingCredits-recommendations[j].RemainingCredits) > 0.01 {
+			return recommendations[i].RemainingCredits < recommendations[j].RemainingCredits
+		}
 		return recommendations[i].CompletionRate > recommendations[j].CompletionRate
 	})
 
@@ -548,13 +592,13 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 	var topRecommendations []Recommendation
 	if len(recommendations) > 0 {
 		currentRank := 1
-		lastRate := recommendations[0].CompletionRate
+		lastRemaining := recommendations[0].RemainingCredits
 
 		for _, rec := range recommendations {
-			// 若完成度小於上一筆，則名次遞增
-			if rec.CompletionRate < lastRate {
+			// 若剩餘學分大於上一筆，則名次遞增 (注意浮點數誤差)
+			if rec.RemainingCredits > lastRemaining+0.01 {
 				currentRank++
-				lastRate = rec.CompletionRate
+				lastRemaining = rec.RemainingCredits
 			}
 
 			// 若名次已超過 5，則停止加入
@@ -562,6 +606,7 @@ func recommendProgramsHandler(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 
+			rec.Rank = currentRank
 			topRecommendations = append(topRecommendations, rec)
 		}
 	}
