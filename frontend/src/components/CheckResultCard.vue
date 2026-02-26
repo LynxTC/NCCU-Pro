@@ -200,6 +200,27 @@ const processedCategoryResults = computed(() => {
                                 </div>
                             </li>
                         </ul>
+
+                        <!-- Missing Courses (Collapsible) -->
+                        <details v-if="!cat.hideCourseList && cat.missingCourses && cat.missingCourses.length > 0"
+                            class="mt-3 group/missing">
+                            <summary
+                                class="text-xs font-bold text-stone-400 cursor-pointer hover:text-stone-600 select-none flex items-center gap-1 list-none transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-3 w-3 transition-transform duration-200 group-open/missing:rotate-90"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                                <span>其他認列課程 ({{ cat.missingCourses.length }})</span>
+                            </summary>
+                            <div class="mt-2 flex flex-wrap gap-2 pl-1">
+                                <span v-for="course in cat.missingCourses" :key="course"
+                                    class="px-2 py-1 bg-stone-100 text-stone-500 text-xs rounded border border-stone-200 transition-colors cursor-default">
+                                    {{ course }}
+                                </span>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>

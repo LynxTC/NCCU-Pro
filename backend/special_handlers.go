@@ -789,6 +789,19 @@ func processStandardRequirements(localRequirements []ProgramRequirement, complet
 		}
 		passedCount := len(uniquePassedCourseNames)
 
+		// 計算未修課程 (MissingCourses)
+		var missingCourses []string
+		// 建立已通過課程名稱的快速查找表
+		passedMap := make(map[string]bool)
+		for _, c := range passedInThisCategory {
+			passedMap[c.Name] = true
+		}
+		for _, reqCourse := range req.Courses {
+			if !passedMap[reqCourse] {
+				missingCourses = append(missingCourses, reqCourse)
+			}
+		}
+
 		// 計算該分類貢獻的有效學分 (處理 MaxCount 和 MaxCredits)
 		creditsContributingToTotal := 0.0
 		countContributing := 0
@@ -865,6 +878,7 @@ func processStandardRequirements(localRequirements []ProgramRequirement, complet
 			PassedCredits:   passedCreditsInCategory,
 			IsMet:           isMet,
 			PassedCourses:   passedInThisCategory,
+			MissingCourses:  missingCourses,
 			LimitExceeded:   limitExceeded,
 			ExceededMessage: exceededMsg,
 		})

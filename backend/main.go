@@ -57,6 +57,7 @@ type CategoryResult struct {
 	PassedCredits   float64         `json:"passedCredits"`
 	IsMet           bool            `json:"isMet"`
 	PassedCourses   []StudentCourse `json:"passedCourses"`
+	MissingCourses  []string        `json:"missingCourses"`
 	LimitExceeded   bool            `json:"limitExceeded"`
 	ExceededMessage string          `json:"exceededMessage"`
 }
