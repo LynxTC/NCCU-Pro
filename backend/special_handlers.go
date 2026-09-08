@@ -256,12 +256,41 @@ func filterAndProcessCourses(programID string, rawCourses []StudentCourse, local
 			relevantPassed = append(relevantPassed, bestCompIntro)
 		}
 
+		// Rule 2.5: 「資料庫管理」與「資料庫應用」兩門課僅能擇一門認列
+		dbGroup := []string{"資料庫管理", "資料庫應用"}
+		var bestDB StudentCourse
+		foundDB := false
+		var nonDBCourses []StudentCourse
+
+		for _, c := range relevantPassed {
+			isDB := false
+			for _, name := range dbGroup {
+				if c.Name == name {
+					isDB = true
+					break
+				}
+			}
+			if isDB {
+				if !foundDB || c.Credit > bestDB.Credit {
+					bestDB = c
+					foundDB = true
+				}
+			} else {
+				nonDBCourses = append(nonDBCourses, c)
+			}
+		}
+		relevantPassed = nonDBCourses
+		if foundDB {
+			relevantPassed = append(relevantPassed, bestDB)
+		}
+
 		// Rule 3: 處理 A/B/C 群組重疊課程的歸屬
 		overlapNames := map[string]bool{
 			"機器學習與人工智慧個案實作":       true,
 			"商業資料分析基礎：Python （一）": true,
 			"商業資料分析：Python（1）":    true,
-			"程式設計與統計軟體(實務)":       true,
+			"程式設計與統計軟體":           true,
+			"程式設計與統計軟體實務":         true,
 			"用Python學財務計量":        true,
 		}
 
@@ -412,7 +441,7 @@ func postprocessResults(programID string, program Program, studentMajor string, 
 		}
 	}
 
-	// 特殊處理：金融科技專長學程 (fintech) - Rule 1: A+B >= 3
+	// 特殊處理：金融科技專長學程 (fintech) - Rule 1: A+B >= 2
 	if programID == "fintech" {
 		countA, countB := 0, 0
 		foundA, foundB := false, false
@@ -428,15 +457,15 @@ func postprocessResults(programID string, program Program, studentMajor string, 
 		}
 		if foundA && foundB {
 			total := countA + countB
-			isMet := total >= 3
+			isMet := total >= 2
 			msg := ""
 			if !isMet {
 				allCategoriesMet = false
-				msg = "群A與群B合計須至少修習 3 門"
+				msg = "群A與群B合計須至少修習 2 門"
 			}
 			newResult := CategoryResult{
 				Category:        "群A + 群B 總修習門數",
-				RequiredCount:   3,
+				RequiredCount:   2,
 				PassedCount:     total,
 				PassedCredits:   0,
 				IsMet:           isMet,
