@@ -5,7 +5,7 @@ import AppModals from './components/AppModals.vue';
 import FileUpload from './components/FileUpload.vue';
 
 // --- 狀態管理 ---
-const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || ''; // Go 後端服務地址
+const BACKEND_URL = ''; // 使用相對路徑，由 Vite proxy 轉發到 Go 後端
 
 // 定義設置單位顯示順序
 const COLLEGE_ORDER = [
