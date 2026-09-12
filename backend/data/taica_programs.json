@@ -1,0 +1,252 @@
+{
+  "categories": {
+    "程式設計類課程": [
+      "基礎程式設計C++",
+      "計算機程式",
+      "人工智慧程式設計",
+      "計算機程式設計(一)",
+      "計算機程式設計",
+      "程式設計"
+    ],
+    "機率類課程": [
+      "機率與統計",
+      "機率論"
+    ],
+    "人工智慧導論類課程": [
+      "人工智慧導論",
+      "人工智慧概論"
+    ],
+    "人工智慧倫理類課程": [
+      "人工智慧倫理",
+      "人工智慧與勞動永續專題研究"
+    ],
+    "人工智慧應用類課程": [
+      "機器導航與探索",
+      "金融科技導論",
+      "大型語言模型與資訊",
+      "生成式AI應用系統與工程"
+    ],
+    "統計類課程": [
+      "統計學暨實習",
+      "統計學(一)",
+      "統計學"
+    ],
+    "機器學習類課程": [
+      "機器學習",
+      "生成式人工智慧與機器學習導論",
+      "機器學習概論",
+      "機器學習觀念與應用",
+      "統計機器學習"
+    ],
+    "資料探勘與應用類課程": [
+      "資料探勘與應用",
+      "資料採掘",
+      "資料科學"
+    ],
+    "智慧製造類課程": [
+      "智慧製造執行系統"
+    ],
+    "機器人專題類課程": [
+      "機器導航與探索"
+    ],
+    "生成式人工智慧導論類課程": [
+      "生成式人工智慧的人文導論",
+      "生成式AI：文字與圖像生成的原理與實務",
+      "生成式人工智慧與數位人文應用"
+    ],
+    "智慧人機互動類課程": [
+      "智慧人機互動",
+      "智慧人機互動與使用介面研究",
+      "人機互動"
+    ],
+    "自然語言處理類課程": [
+      "自然語言處理"
+    ],
+    "深度學習類課程": [
+      "深度學習",
+      "深度學習：基礎及應用"
+    ],
+    "電腦視覺類課程": [
+      "電腦視覺實務與深度學習",
+      "電腦視覺"
+    ],
+    "人工智慧影像應用類課程": [
+      "機器導航與探索"
+    ],
+    "資訊安全導論類課程": [],
+    "人工智慧安全與隱私保護類課程": [],
+    "人工智慧於資通訊安全應用類課程": [
+      "大型語言模型與資訊安全系統"
+    ]
+  },
+  "programs": {
+    "TAICA": {
+      "taica_ai_exploration": {
+        "name": "人工智慧探索應用學分學程",
+        "min_credits": 15.0,
+        "description": "修習認列科目達 15 學分",
+        "url": "https://bpai.nccu.edu.tw/PageDoc/Detail?fid=13564&id=31708",
+        "requirements": [
+          {
+            "category": "程式設計類課程",
+            "category_ref": "程式設計類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "機率類課程",
+            "category_ref": "機率類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧導論類課程",
+            "category_ref": "人工智慧導論類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧倫理類課程",
+            "category_ref": "人工智慧倫理類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧應用類課程",
+            "category_ref": "人工智慧應用類課程",
+            "min_credits": 3.0
+          }
+        ]
+      },
+      "taica_ai_industrial": {
+        "name": "人工智慧工業應用學分學程",
+        "min_credits": 15.0,
+        "description": "修習認列科目達 15 學分",
+        "url": "https://bpai.nccu.edu.tw/PageDoc/Detail?fid=13564&id=31708",
+        "requirements": [
+          {
+            "category": "統計類課程",
+            "category_ref": "統計類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "機器學習類課程 / 資料探勘與應用類課程 (擇一修習)",
+            "min_credits": 3.0,
+            "courses": [],
+            "category_ref": "機器學習類課程,資料探勘與應用類課程"
+          },
+          {
+            "category": "人工智慧倫理類課程",
+            "category_ref": "人工智慧倫理類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "智慧製造類課程",
+            "category_ref": "智慧製造類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "機器人專題類課程",
+            "category_ref": "機器人專題類課程",
+            "min_credits": 3.0
+          }
+        ]
+      },
+      "taica_ai_nlp": {
+        "name": "人工智慧自然語言處理技術學分學程",
+        "min_credits": 15.0,
+        "description": "修習認列科目達 15 學分",
+        "url": "https://bpai.nccu.edu.tw/PageDoc/Detail?fid=13564&id=31708",
+        "requirements": [
+          {
+            "category": "生成式人工智慧導論類課程",
+            "category_ref": "生成式人工智慧導論類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "資料探勘與應用類課程",
+            "category_ref": "資料探勘與應用類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧倫理類課程",
+            "category_ref": "人工智慧倫理類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "智慧人機互動類課程",
+            "category_ref": "智慧人機互動類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "自然語言處理類課程",
+            "category_ref": "自然語言處理類課程",
+            "min_credits": 3.0
+          }
+        ]
+      },
+      "taica_ai_vision": {
+        "name": "人工智慧視覺技術學分學程",
+        "min_credits": 15.0,
+        "description": "修習認列科目達 15 學分",
+        "url": "https://bpai.nccu.edu.tw/PageDoc/Detail?fid=13564&id=31708",
+        "requirements": [
+          {
+            "category": "機器學習類課程",
+            "category_ref": "機器學習類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "深度學習類課程",
+            "category_ref": "深度學習類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧倫理類課程",
+            "category_ref": "人工智慧倫理類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "電腦視覺類課程",
+            "category_ref": "電腦視覺類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧影像應用類課程",
+            "category_ref": "人工智慧影像應用類課程",
+            "min_credits": 3.0
+          }
+        ]
+      },
+      "taica_ai_infosec": {
+        "name": "人工智慧資訊安全技術學分學程",
+        "min_credits": 15.0,
+        "description": "修習認列科目達 15 學分",
+        "url": "https://bpai.nccu.edu.tw/PageDoc/Detail?fid=13564&id=31708",
+        "requirements": [
+          {
+            "category": "人工智慧倫理類課程",
+            "category_ref": "人工智慧倫理類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "資訊安全導論類課程",
+            "category_ref": "資訊安全導論類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "深度學習類課程",
+            "category_ref": "深度學習類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧安全與隱私保護類課程",
+            "category_ref": "人工智慧安全與隱私保護類課程",
+            "min_credits": 3.0
+          },
+          {
+            "category": "人工智慧於資通訊安全應用類課程",
+            "category_ref": "人工智慧於資通訊安全應用類課程",
+            "min_credits": 3.0
+          }
+        ]
+      }
+    }
+  }
+}
