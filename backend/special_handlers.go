@@ -87,6 +87,28 @@ func filterAndProcessCourses(programID string, rawCourses []StudentCourse, local
 		}
 	}
 
+	// 特殊處理：人工智慧跨域學分學程 - 「語料處理」限 113 學年度（含）以前修習
+	if programID == "AI_interdisciplinary_credit" {
+		filterCorpusProcessing := func(courses []StudentCourse) []StudentCourse {
+			var filtered []StudentCourse
+			for _, c := range courses {
+				if c.Name == "語料處理" {
+					parts := strings.Split(c.Semester, "-")
+					if len(parts) > 0 {
+						year, err := strconv.Atoi(parts[0])
+						if err == nil && year > 113 {
+							continue // Skip this course
+						}
+					}
+				}
+				filtered = append(filtered, c)
+			}
+			return filtered
+		}
+		relevantPassed = filterCorpusProcessing(relevantPassed)
+		inProgressCourses = filterCorpusProcessing(inProgressCourses)
+	}
+
 	// 特殊處理：東南亞區域研究微學程 - 同一名老師開設課程至多認列兩門
 	if programID == "southeast_asian_area_studies" {
 		instructorCounts := make(map[string]int)
