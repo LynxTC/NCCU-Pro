@@ -10,12 +10,15 @@ export default defineConfig({
   server: {
     host: true, // 確保在網絡中可訪問
     port: 5173,
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:8080',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '/api'),
-    //   },
-    // },
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+      },
+      '/healthcheck': {
+        target: 'http://127.0.0.1:8080',
+        changeOrigin: true,
+      },
+    },
   },
 });

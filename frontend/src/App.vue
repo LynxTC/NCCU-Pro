@@ -5,7 +5,7 @@ import AppModals from './components/AppModals.vue';
 import FileUpload from './components/FileUpload.vue';
 
 // --- 狀態管理 ---
-const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || ''; // Go 後端服務地址
+const BACKEND_URL = import.meta.env.VITE_API_BASE_URL || ''; // 生產環境使用後端網址，開發時空字串由 Vite proxy 轉發
 
 // 定義設置單位顯示順序
 const COLLEGE_ORDER = [
@@ -207,6 +207,19 @@ const addProgramToSelection = (id, name) => {
     }
 };
 
+/**
+ * 切換到個別學程要求頁籤，並在條件滿足時自動啟動檢核流程。
+ * 讓使用者點「前往確認學程要求」時不需再手動按「開始確認」。
+ */
+const goToCheckAndStart = () => {
+    activeTab.value = 'check';
+    showSelectedSidebar.value = false;
+    // 若已上傳檔案且已選取學程，直接觸發檢核（含免責聲明 Modal）
+    if (isReadyToCheck.value) {
+        startCheck();
+    }
+};
+
 // --- Computed 屬性 (用於 UI 邏輯) ---
 
 const sortedCollegeNames = computed(() => {
@@ -281,6 +294,26 @@ const selectedProgramsList = computed(() => {
         }
     }
     return list;
+});
+
+// 判斷已選學程中是否含有學分學程（type === 'credit' 或 'specialty'）
+const hasSelectedCredit = computed(() => {
+    for (const college of Object.values(programsByCollege.value)) {
+        for (const [id, program] of Object.entries(college)) {
+            if (selectedProgramIds.value.includes(id) && program.type !== 'micro') return true;
+        }
+    }
+    return false;
+});
+
+// 判斷已選學程中是否含有微學程（type === 'micro'）
+const hasSelectedMicro = computed(() => {
+    for (const college of Object.values(programsByCollege.value)) {
+        for (const [id, program] of Object.entries(college)) {
+            if (selectedProgramIds.value.includes(id) && program.type === 'micro') return true;
+        }
+    }
+    return false;
 });
 
 const visibleCheckResults = computed(() => {
@@ -549,7 +582,7 @@ onUnmounted(() => {
 
                     <!-- 前往要求區按鈕 -->
                     <div v-if="hasRunRecommendation" class="mt-8 text-center pt-6 border-t border-stone-100">
-                        <button @click="activeTab = 'check'"
+                        <button @click="goToCheckAndStart()"
                             class="px-8 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 transition-all duration-200 flex items-center justify-center mx-auto transform hover:-translate-y-1">
                             前往確認學程要求
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
@@ -560,6 +593,7 @@ onUnmounted(() => {
                             </svg>
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -701,7 +735,15 @@ onUnmounted(() => {
             </div>
 
             <div class="mt-12 pt-8 border-t border-stone-200">
-                <h2 class="text-3xl font-bold text-emerald-900 mb-8 font-serif text-center tracking-wide">檢核結果報告</h2>
+                <h2 class="text-3xl font-bold text-emerald-900 mb-4 font-serif text-center tracking-wide">檢核結果報告</h2>
+                <p v-if="hasSelectedCredit"
+                    class="text-sm text-stone-500 mb-3 bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    註：學分學程認列科目至少應有三分之一學分數不屬於原學系、所之專業必修科目（此檢核項目尚未建置，請使用者自行確認）
+                </p>
+                <p v-if="hasSelectedMicro"
+                    class="text-sm text-stone-500 mb-6 bg-stone-50 p-3 rounded-lg border border-stone-100">
+                    註：微學程所認列之通識課程以一門為限（以學分較多者計）
+                </p>
                 <div id="resultsArea" class="space-y-6">
                     <p v-if="checkResults.length === 0 && !isChecking" class="text-stone-400 text-center py-10">
                         檢核結果將顯示在此處</p>
@@ -826,7 +868,7 @@ onUnmounted(() => {
                             <p>【一般財政】【稅務】【財政管理】【公共經濟】四個微學程<span class="font-bold underline">僅能擇一申請</span>，請確認申請規劃。</p>
                         </div>
                         <button v-if="activeTab === 'recommendation' && selectedProgramsList.length > 0"
-                            @click="activeTab = 'check'"
+                            @click="goToCheckAndStart()"
                             class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2">
                             <span>✏️</span> 前往確認學程要求
                         </button>

@@ -29,12 +29,13 @@ type StudentCourse struct {
 
 // 學程要求中的一個分類
 type ProgramRequirement struct {
-	Category   string   `json:"category"`
-	MinCount   int      `json:"min_count"`
-	MaxCount   int      `json:"max_count"`
-	MaxCredits float64  `json:"max_credits"` // 該分類最高認列學分
-	MinCredits float64  `json:"min_credits"`
-	Courses    []string `json:"courses"` // 課程名稱列表
+	Category    string   `json:"category"`
+	CategoryRef string   `json:"category_ref,omitempty"`
+	MinCount    int      `json:"min_count"`
+	MaxCount    int      `json:"max_count"`
+	MaxCredits  float64  `json:"max_credits"` // 該分類最高認列學分
+	MinCredits  float64  `json:"min_credits"`
+	Courses     []string `json:"courses"` // 課程名稱列表
 }
 
 // 單一學程定義
@@ -143,6 +144,12 @@ func isInProgress(scoreStr string) bool {
 	return strings.TrimSpace(scoreStr) == "成績未到或無成績"
 }
 
+// TAICA 學分學程資料結構
+type TaicaData struct {
+	Categories map[string][]string           `json:"categories"`
+	Programs   map[string]map[string]Program `json:"programs"`
+}
+
 // 載入學程定義
 func loadPrograms() error {
 	programsByCollege = make(map[string]map[string]Program)
@@ -205,6 +212,44 @@ func loadPrograms() error {
 			}
 		}
 	}
+
+	// 載入 TAICA 專屬學程
+	taicaFile, err := os.ReadFile("data/taica_programs.json")
+	if err == nil {
+		var taicaData TaicaData
+		err = json.Unmarshal(taicaFile, &taicaData)
+		if err != nil {
+			return fmt.Errorf("無法解析 taica_programs.json: %w", err)
+		}
+
+		for college, collegePrograms := range taicaData.Programs {
+			if _, ok := programsByCollege[college]; !ok {
+				programsByCollege[college] = make(map[string]Program)
+			}
+			for id, p := range collegePrograms {
+				p.Type = "credit" // 標記為學分學程
+
+				// 動態注入 CategoryRef 對應的課程清單
+				for i := range p.Requirements {
+					if p.Requirements[i].CategoryRef != "" {
+						var combinedCourses []string
+						refs := strings.Split(p.Requirements[i].CategoryRef, ",")
+						for _, ref := range refs {
+							ref = strings.TrimSpace(ref)
+							if courses, exists := taicaData.Categories[ref]; exists {
+								combinedCourses = append(combinedCourses, courses...)
+							}
+						}
+						p.Requirements[i].Courses = combinedCourses
+					}
+				}
+
+				programsByCollege[college][id] = p
+				programs[id] = p
+			}
+		}
+	}
+
 	return nil
 }
 
