@@ -303,6 +303,12 @@ const totalPages = computed(() => {
     return Math.ceil(checkResults.value.length / pageSize.value);
 });
 
+// 四個財政類微學程僅能擇一申請，選取其中任一時顯示提醒
+const FISCAL_MICRO_IDS = ['normal_public_finance', 'public_economics', 'public_finance_management', 'taxation'];
+const fiscalMicroConflict = computed(() => {
+    return FISCAL_MICRO_IDS.filter(id => selectedProgramIds.value.includes(id));
+});
+
 const changePage = (page) => {
     if (page >= 1 && page <= totalPages.value) {
         currentPage.value = page;
@@ -615,6 +621,22 @@ onUnmounted(() => {
                     註：微學程所認列之通識課程以一門為限（以學分較多者計）
                 </p>
 
+                <!-- 財政類微學程擇一申請提醒 -->
+                <div v-if="selectedProgramType === 'micro' && fiscalMicroConflict.length > 0"
+                    class="mb-6 flex items-start gap-3 bg-amber-50 border border-amber-300 text-amber-800 rounded-xl p-4 text-sm leading-relaxed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 mt-0.5 text-amber-500"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        <p class="font-bold mb-1">申請資格提醒</p>
+                        <p>【一般財政微學程】、【稅務微學程】、【財政管理微學程】及【公共經濟微學程】四個學程<span
+                                class="font-bold underline">僅能擇一申請</span>，請確認您的申請規劃。本工具仍會分別顯示各學程的修習進度供您參考。</p>
+                    </div>
+                </div>
+
                 <div id="programCheckboxes" class="space-y-6">
                     <!-- 一般學分學程 / 微學程 -->
                     <div>
@@ -792,6 +814,17 @@ onUnmounted(() => {
                         </div>
                     </div>
                     <div class="border-t border-stone-200 p-4 sm:px-6 bg-stone-50/50 flex flex-col gap-3">
+                        <!-- 財政類微學程擇一申請提醒（側欄） -->
+                        <div v-if="fiscalMicroConflict.length > 0"
+                            class="flex items-start gap-2 bg-amber-50 border border-amber-300 text-amber-800 rounded-lg p-3 text-xs leading-relaxed">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 mt-0.5 text-amber-500"
+                                viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <p>【一般財政】【稅務】【財政管理】【公共經濟】四個微學程<span class="font-bold underline">僅能擇一申請</span>，請確認申請規劃。</p>
+                        </div>
                         <button v-if="activeTab === 'recommendation' && selectedProgramsList.length > 0"
                             @click="activeTab = 'check'"
                             class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2">

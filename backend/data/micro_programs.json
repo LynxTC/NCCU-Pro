@@ -508,6 +508,172 @@
                     ]
                 }
             ]
+        },
+        "austronesian": {
+            "name": "南島研究微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分（群修 6 + 選修 3）",
+            "url": "https://ofas.nccu.edu.tw/news/76",
+            "requirements": [
+                {
+                    "category": "群修課程",
+                    "min_count": 2,
+                    "courses": [
+                        "環太平洋語言:歷史，語言，社會與政治",
+                        "區域研究-澳紐與太平洋島國國際關係",
+                        "大洋洲民族誌專題"
+                    ]
+                },
+                {
+                    "category": "選修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "19世紀西方人在臺灣的旅行圖像",
+                        "自然資源與再生能源",
+                        "進階田野課程",
+                        "空間與語言",
+                        "開箱博物館：藏品、展覽與世界的故事"
+                    ]
+                }
+            ]
+        },
+        "indigenous_develop": {
+            "name": "原住民族發展微學程",
+            "min_credits": 10.0,
+            "description": "至少修滿 10 學分（核心 6 + 族語 4）",
+            "url": "https://ctid.nccu.edu.tw/news/20",
+            "requirements": [
+                {
+                    "category": "核心課程",
+                    "min_count": 2,
+                    "courses": [
+                        "原住民族與國家發展",
+                        "原住民族行政及法規",
+                        "原住民族教育"
+                    ]
+                },
+                {
+                    "category": "族語課程",
+                    "min_credits": 4.0,
+                    "courses": [
+                        "台灣原住民語言—阿美語",
+                        "台灣原住民語言—賽德克語",
+                        "台灣原住民語言—排灣語",
+                        "台灣原住民語言—泰雅語",
+                        "台灣原住民語言—布農語",
+                        "台灣原住民語言—賽夏語"
+                    ]
+                }
+            ]
+        },
+        "normal_public_finance": {
+            "name": "一般財政微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分（必修 6 + 選修 3）",
+            "url": "https://pf.nccu.edu.tw/PageDoc/Detail?fid=14917&id=42604",
+            "requirements": [
+                {
+                    "category": "必修課程",
+                    "min_credits": 6.0,
+                    "courses": [
+                        "財政學"
+                    ]
+                },
+                {
+                    "category": "選修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "稅務會計",
+                        "證券管理",
+                        "稅務個案實習",
+                        "跨國企業國際稅收管理",
+                        "中國稅務與商務",
+                        "貿易理論與關稅政策",
+                        "公共選擇理論",
+                        "成本效益分析",
+                        "能源經濟管理導論",
+                        "永續發展與企業社會責任",
+                        "循環經濟和永續發展",
+                        "循環商業模式",
+                        "租稅個案實習",
+                        "國際租稅法",
+                        "所得稅問題",
+                        "地方財政"
+                    ]
+                }
+            ]
+        },
+        "public_economics": {
+            "name": "公共經濟微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分（必修 6 + 選修 3）",
+            "url": "https://pf.nccu.edu.tw/PageDoc/Detail?fid=14918&id=42607",
+            "requirements": [
+                {
+                    "category": "必修課程",
+                    "min_credits": 6.0,
+                    "courses": [
+                        "財政學"
+                    ]
+                },
+                {
+                    "category": "選修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "經濟數學",
+                        "現代財政理論"
+                    ]
+                }
+            ]
+        },
+        "public_finance_management": {
+            "name": "財政管理微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分（必修 6 + 選修 3）",
+            "url": "https://pf.nccu.edu.tw/PageDoc/Detail?fid=14919&id=42609",
+            "requirements": [
+                {
+                    "category": "必修課程",
+                    "min_credits": 6.0,
+                    "courses": [
+                        "財政學"
+                    ]
+                },
+                {
+                    "category": "選修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "貨幣銀行學",
+                        "財務行政"
+                    ]
+                }
+            ]
+        },
+        "taxation": {
+            "name": "稅務微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分（必修 6 + 選修 3）",
+            "url": "https://pf.nccu.edu.tw/PageDoc/Detail?fid=14920&id=42611",
+            "requirements": [
+                {
+                    "category": "必修課程",
+                    "min_credits": 6.0,
+                    "courses": [
+                        "財政學"
+                    ]
+                },
+                {
+                    "category": "選修課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "財產稅理論與制度",
+                        "所得稅理論與制度",
+                        "消費稅理論與制度",
+                        "租稅法（一）",
+                        "租稅法（二）"
+                    ]
+                }
+            ]
         }
     },
     "商學院": {
@@ -811,6 +977,24 @@
                         "企業評價",
                         "不動產財務",
                         "不動產投資"
+                    ]
+                }
+            ]
+        },
+        "AI_commerce": {
+            "name": "AI商管微學程",
+            "min_credits": 9.0,
+            "description": "至少修滿 9 學分",
+            "url": "https://perdo.nccu.edu.tw/zh_tw/business/business8",
+            "requirements": [
+                {
+                    "category": "認列課程",
+                    "min_credits": 9.0,
+                    "courses": [
+                        "AI 協作行銷",
+                        "Agentic AI 在金融領域的應用",
+                        "AI驅動下的軟體開發與專案管理",
+                        "人工智慧與商業應用"
                     ]
                 }
             ]
@@ -1691,6 +1875,45 @@
                     "courses": [
                         "生成式 AI 及資料科學應用實作",
                         "生成式 AI 實作"
+                    ]
+                }
+            ]
+        },
+        "EMI_sustainable_transitions_in_global_governance": {
+            "name": "全球治理下的永續轉型全英語微學程",
+            "min_credits": 12.0,
+            "description": "至少修滿 12 學分（基礎 3 + 核心 3 + 進階 6）",
+            "url": "https://ici.nccu.edu.tw/PageDoc/Detail?fid=14850&id=41973",
+            "requirements": [
+                {
+                    "category": "基礎課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "國際永續發展專題(何浩慈)",
+                        "氣候變遷對社會韌性的挑戰(呂采穎、趙家緯)",
+                        "永續發展與地方創生(蔡文宜)",
+                        "創新與全球發展(江順楠)"
+                    ]
+                },
+                {
+                    "category": "核心課程",
+                    "min_credits": 3.0,
+                    "courses": [
+                        "人文地理(陳虹穎)",
+                        "環境人文：理論與議題",
+                        "社會理論中的全球環境：經濟、政治與生態(江順楠)"
+                    ]
+                },
+                {
+                    "category": "進階課程",
+                    "min_credits": 6.0,
+                    "courses": [
+                        "永續發展與都市政治(陳虹穎)",
+                        "永續發展數據分析：理論與應用(卞中佩)",
+                        "蓋婭政治與戰時生態學(彭保羅)",
+                        "永續發展商業模式：選擇、實施與最佳案例分析(蔡文宜)",
+                        "探索淨零排放路徑：概論與行動設計(趙家緯)",
+                        "量化的環境治理：永續指標的實作與政治(江順楠)"
                     ]
                 }
             ]

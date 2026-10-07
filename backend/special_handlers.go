@@ -23,11 +23,13 @@ func preprocessRequirements(programID string, program Program) ([]ProgramRequire
 	courseInstructorMap := make(map[string]string)
 
 	isSoutheastAsianProgram := programID == "southeast_asian_area_studies"
+	isInstructorTaggedProgram := isSoutheastAsianProgram || programID == "EMI_sustainable_transitions_in_global_governance"
 
 	for i, req := range localRequirements {
 		for j, courseName := range req.Courses {
-			// 特殊處理：東南亞區域研究微學程 - 處理 "課程名稱(教師名)" 格式
-			if isSoutheastAsianProgram && strings.Contains(courseName, "(") && strings.HasSuffix(courseName, ")") {
+			// 特殊處理：東南亞區域研究微學程 / 全球治理下的永續轉型全英語微學程
+			// 處理 "課程名稱(教師名)" 格式（半形括號）
+			if isInstructorTaggedProgram && strings.Contains(courseName, "(") && strings.HasSuffix(courseName, ")") {
 				start := strings.LastIndex(courseName, "(")
 				realName := strings.TrimSpace(courseName[:start])
 				instructor := courseName[start+1 : len(courseName)-1]
@@ -87,8 +89,8 @@ func filterAndProcessCourses(programID string, rawCourses []StudentCourse, local
 		}
 	}
 
-	// 特殊處理：東南亞區域研究微學程 - 同一名老師開設課程至多認列兩門
-	if programID == "southeast_asian_area_studies" {
+	// 特殊處理：東南亞區域研究微學程 / 全球治理下的永續轉型全英語微學程 - 同一名老師開設課程至多認列兩門
+	if programID == "southeast_asian_area_studies" || programID == "EMI_sustainable_transitions_in_global_governance" {
 		instructorCounts := make(map[string]int)
 		var filteredByInstructor []StudentCourse
 
@@ -531,6 +533,70 @@ func postprocessResults(programID string, program Program, studentMajor string, 
 			categoryResults = append(categoryResults[:insertIdx], append([]CategoryResult{newResult}, categoryResults[insertIdx:]...)...)
 		} else {
 			categoryResults = append(categoryResults, newResult)
+		}
+	}
+
+	// 特殊處理：原住民族發展微學程 - 族語課程需同一語言之第一、二學期均已修畢方能認列
+	if programID == "indigenous_develop" {
+		for i := range categoryResults {
+			if categoryResults[i].Category == "族語課程" {
+				// 依課程名稱分組，統計各語言修習的學期
+				type semSet struct {
+					hasSem1 bool
+					hasSem2 bool
+					courses [2]StudentCourse // [0]=學期1, [1]=學期2
+				}
+				langMap := make(map[string]*semSet)
+				for _, c := range categoryResults[i].PassedCourses {
+					if _, ok := langMap[c.Name]; !ok {
+						langMap[c.Name] = &semSet{}
+					}
+					if strings.HasSuffix(c.Semester, "-1") {
+						langMap[c.Name].hasSem1 = true
+						langMap[c.Name].courses[0] = c
+					} else if strings.HasSuffix(c.Semester, "-2") {
+						langMap[c.Name].hasSem2 = true
+						langMap[c.Name].courses[1] = c
+					}
+				}
+
+				// 僅保留上下學期均有修習的語言課程
+				var validCourses []StudentCourse
+				var removedNames []string
+				for langName, s := range langMap {
+					if s.hasSem1 && s.hasSem2 {
+						validCourses = append(validCourses, s.courses[0], s.courses[1])
+					} else {
+						removedNames = append(removedNames, langName)
+					}
+				}
+
+				// 重新計算學分與 IsMet
+				newCredits := 0.0
+				for _, c := range validCourses {
+					newCredits += c.Credit
+				}
+				oldCredits := categoryResults[i].PassedCredits
+				categoryResults[i].PassedCourses = validCourses
+				categoryResults[i].PassedCount = len(validCourses)
+				categoryResults[i].PassedCredits = newCredits
+				categoryResults[i].IsMet = newCredits >= float64(categoryResults[i].RequiredCredits)
+
+				if len(removedNames) > 0 {
+					sort.Strings(removedNames)
+					categoryResults[i].LimitExceeded = true
+					categoryResults[i].ExceededMessage = fmt.Sprintf(
+						"族語課程須修畢同一語言之第一學期及第二學期方能認列（以下語言僅修單一學期，不予計入：%s）",
+						strings.Join(removedNames, "、"),
+					)
+				}
+
+				if !categoryResults[i].IsMet {
+					allCategoriesMet = false
+				}
+				effectiveTotalCredits -= (oldCredits - newCredits)
+				break
+			}
 		}
 	}
 
