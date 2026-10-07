@@ -22,31 +22,48 @@
 
 | 類別 | 技術名稱 | 說明 |
 | :---- | :---- | :---- |
-| **後端 (Backend)** | Go (Golang) | 使用 `gorilla/mux` 處理路由，實作高效的核心檢核邏輯與 RESTful API。 |
-| **前端 (Frontend)** | Vue 3 (Composition API) | 使用 Vite 建置，結合 Tailwind CSS 與 PWA 技術 (Service Worker) 打造現代化 UI。 |
+| **後端 (Backend)** | Go 1.25 | 使用 `gorilla/mux v1.8.1` 處理路由，實作高效的核心檢核邏輯與 RESTful API。 |
+| **前端 (Frontend)** | Vue 3.4 (Composition API) | 使用 Vite 8 建置，結合 Tailwind CSS 3 與 PWA 技術 (Service Worker) 打造現代化 UI。 |
 | **資料交換** | JSON | 前後端透過 JSON 格式傳遞學程定義與檢核結果。 |
-| **佈署 (Deployment)** | Render | 雲端服務佈署。 |
+| **佈署 (Deployment)** | Render | 雲端服務佈署（前後端分離部署）。 |
 
 ## **📂 專案結構**
 
 ```text
 program-checker/
-├── backend/                         # Go 後端核心
-│   ├── main.go                          # API 服務與檢核邏輯
-│   ├── special_handlers.go              # 特殊學程規則與進階檢核邏輯
-│   ├── data/                            # 資料庫檔案
-│   │   ├── credit_programs.json             # 學分學程資料庫
-│   │   ├── micro_programs.json              # 微學程資料庫
-│   │   ├── commerce_specialty_programs.json # 院級專長學程資料庫
-│   │   └── departments_grouped.json         # 系所歸屬定義
+├── backend/                   # Go 後端核心
+│   ├── main.go                    # API 路由、資料載入、核心檢核與推薦邏輯
+│   ├── special_handlers.go        # 特殊學程規則、進階前處理與後處理邏輯
+│   └── data/                      # 學程資料庫 (JSON)
+│       ├── credit_programs.json       # 學分學程
+│       ├── micro_programs.json        # 微學程
+│       ├── commerce_specialty_programs.json  # 院級專長學程（商學院）
+│       ├── taica_programs.json        # TAICA 跨院 AI 學分學程
+│       └── departments_grouped.json   # 系所歸屬定義
+├── frontend/                  # Vue 3 前端介面
+│   ├── public/                    # PWA 靜態資源（Manifest、Icons）
+│   ├── src/
+│   │   ├── components/            # Vue 元件（上傳、檢核結果卡、Modal）
+│   │   ├── App.vue                # 根元件（主頁面、狀態管理、API 呼叫）
+│   │   └── ...
+│   ├── service-worker.js          # Service Worker（PWA 離線快取）
 │   └── ...
-├── frontend/                        # Vue 3 前端介面
-│   ├── public/                          # 靜態資源 (Manifest, Icons)
-│   ├── src/assets/                      # 專案資源 (Logo)
-│   ├── .env.example                     # 環境變數範例
-│   └── ...
-└── README.md                        # 說明文件
+├── test_data/                 # 測試用學生資料
+└── README.md
 ```
+
+## **🔌 API 端點**
+
+後端提供以下 RESTful API：
+
+| 方法 | 路徑 | 說明 |
+| :---- | :---- | :---- |
+| `GET` | `/healthcheck` | 健康檢查（防止雲端服務休眠） |
+| `GET` | `/api/programs` | 取得所有學程列表（依學院分組） |
+| `POST` | `/api/check` | 上傳課程 JSON，檢核指定學程完成度 |
+| `POST` | `/api/recommend` | 上傳課程 JSON，推薦完成度最高的前五名學程 |
+
+> `/api/check` 與 `/api/recommend` 均接受 `multipart/form-data`，欄位為 `student_json`（JSON 檔案）。`/api/check` 另需 `program_ids`（逗號分隔的學程 ID 字串）。
 
 ## **快速開始 (開發環境)**
 
@@ -62,6 +79,7 @@ program-checker/
    * `data/micro_programs.json`
    * `data/credit_programs.json`
    * `data/commerce_specialty_programs.json`
+   * `data/taica_programs.json`
    * `data/departments_grouped.json`
 3. 啟動服務 (預設 Port 8080)：
    ```bash
@@ -78,10 +96,10 @@ program-checker/
    ```bash
    npm install
    ```
-3. 設定環境變數：
-   複製 `.env.example` 為 `.env.local` 並設定後端位址：
-   ```bash
-   VITE_API_BASE_URL=http://localhost:8080
+3. 確認環境變數：
+   開發時 `.env.development` 中 `VITE_API_BASE_URL` 留空即可（Vite 代理會自動將 `/api` 請求轉發至 `http://127.0.0.1:8080`）：
+   ```
+   VITE_API_BASE_URL=
    ```
 4. 啟動開發伺服器：
    ```bash
@@ -105,27 +123,58 @@ program-checker/
 * `data/credit_programs.json`: 一般學分學程
 * `data/micro_programs.json`: 微學程
 * `data/commerce_specialty_programs.json`: 院級專長學程（目前僅商學院使用）
+* `data/taica_programs.json`: TAICA 跨院人工智慧學分學程（採用「課程類別池」架構，由 `categories` 定義共用課程池，再由 `programs` 引用）
 * `data/departments_grouped.json`: 系所歸屬定義（用於判斷學生學籍歸屬，檢查是否牴觸學程身分限制）
 
-### **JSON 結構說明**
+### **JSON 結構說明（一般學程）**
 
 若您希望協助更新學程資料，請參考以下欄位定義：
 
 ```json
 "program_id": {
     "name": "學程名稱",
-    "min_credits": 20.0,  // 總學分門檻
+    "url": "學程官方網址",
+    "min_credits": 20.0,
     "description": "學程通過條件描述",
-    "general_education_courses": ["通識A", "通識B"], // (選填) 指定通識課程清單
+    "general_education_courses": ["通識A", "通識B"],
     "requirements": [
         {
-            "category": "必修課程",   // (必填) 認列課程類別（如必修、基礎等）
-            "min_credits": 6.0,      // (選填) 該類別學分門檻
-            "min_count": 2,          // (選填) 該類別門數門檻
-            "max_count": 1,          // (選填) 該類別採計上限門數
+            "category": "必修課程",
+            "min_credits": 6.0,
+            "min_count": 2,
+            "max_count": 1,
+            "max_credits": 0,
             "courses": ["課程A", "課程B"]
         }
     ]
+}
+```
+
+### **JSON 結構說明（TAICA 學程）**
+
+`taica_programs.json` 採用兩層式架構，`category_ref` 欄位可引用 `categories` 中的共用課程池，後端啟動時會自動注入對應的課程清單：
+
+```json
+{
+    "categories": {
+        "程式設計類課程": ["基礎程式設計C++", "計算機程式"],
+        "機率類課程": ["機率與統計", "機率論"]
+    },
+    "programs": {
+        "學院名稱": {
+            "program_id": {
+                "name": "學程名稱",
+                "min_credits": 15.0,
+                "requirements": [
+                    {
+                        "category": "程式設計",
+                        "category_ref": "程式設計類課程",
+                        "min_credits": 3.0
+                    }
+                ]
+            }
+        }
+    }
 }
 ```
 
